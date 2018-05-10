@@ -31,8 +31,8 @@ def merge_top_contributors(nestdf, groupbycol, nestcol, newcolname, mergedf ,key
 
     return newdf
 
-if __name__ == "__main__":
 
+def main():
     engine, conn = gc.connect_to_database()
     session, Base = gc.create_session()
 
@@ -59,6 +59,12 @@ if __name__ == "__main__":
 
     
     relevantgroups.to_csv("relevantgroups.csv")
+
+
+if __name__ == "__main__":
+
+    main()
+    code.interact(local=locals())
 
 
  

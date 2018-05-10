@@ -158,7 +158,8 @@ def floats_to_ints(list_dict):
                         v[counter] = int(item)
     return list_dict
 
-if __name__ == "__main__":
+
+def main():
     groups, mandates, top_cos_groups, top_sim_groups = import_data()
 
     communities_json = construct_network_graph_dict(groups,
@@ -235,6 +236,11 @@ if __name__ == "__main__":
     }
     with open('test_mothernode.json', 'w') as outfile:
         json.dump(mother_node, outfile, indent=4, separators=(',',':'))
+
+
+if __name__ == "__main__":
+    
+    main()
 
     code.interact(local=locals())
 

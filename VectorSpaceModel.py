@@ -10,14 +10,14 @@ from sklearn.feature_extraction.text import TfidfTransformer
 
 
 def import_data():
-    return  data.import_dataframe("relevantgroups"), data.import_dataframe("mandates"), data.import_dataframe("similarities")
+    return  data.import_dataframe("relevantgroups"), data.import_dataframe("mandates")
 
 def groups_to_vector(df, columns_to_clean):
     """
     df: Dataframe
     columns_to_clean: List of columns inside df
     """
-    groups_vector = uf.text_cleaning_pipe(groups[columns_to_clean].dropna())
+    groups_vector = uf.text_cleaning_pipe(df[columns_to_clean].dropna())
     groups_vector = (groups_vector
                      .dropna()
                      .drop_duplicates()
@@ -78,9 +78,8 @@ def create_cosine_similarity_dataframe(data, column_names):
 
 
 # Running the file
-
-if __name__ == "__main__":
-    groups, mandates, similiarities =  import_data()
+def main():
+    groups, mandates =  import_data()
 
     groups = data.process_groups_for_vsm(groups, description_min = 10)
 
@@ -97,4 +96,8 @@ if __name__ == "__main__":
 
     similarity_dataframe.to_csv("cosine_similarities.csv")
 
+
+if __name__ == "__main__":
+
+    main()
     code.interact(local=locals())

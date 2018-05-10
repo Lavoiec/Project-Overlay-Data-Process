@@ -37,21 +37,23 @@ def calculate_group_similarities(df, groupbycol, nestcol, newcolname):
     similarity_df[groupbycol]= newdf[groupbycol]
 
     return similarity_df
-    
 
-group_memberships, cosine_groups = import_data(only_relevant_groups=True)
+def main():
+    group_memberships, cosine_groups = import_data(only_relevant_groups=True)
 
 
-similar_groups = calculate_group_similarities(df=group_memberships,
+    similar_groups = calculate_group_similarities(df=group_memberships,
                                               groupbycol='group_guid',
                                               nestcol='user_guid',
                                               newcolname='members'
                                               )
 
-top_sim_groups = uf.make_dataframe_from_similar_groups(similar_groups, id_col='group_guid',n=number_of_groups)
-top_cos_groups = uf.make_dataframe_from_similar_groups(cosine_groups, id_col='Unnamed: 0',n=number_of_groups)
-top_cos_groups.to_csv("top_cos_groups.csv")
-top_sim_groups.to_csv("top_sim_groups.csv")
+    top_sim_groups = uf.make_dataframe_from_similar_groups(similar_groups, id_col='group_guid',n=number_of_groups)
+    top_cos_groups = uf.make_dataframe_from_similar_groups(cosine_groups, id_col='Unnamed: 0',n=number_of_groups)
+    top_cos_groups.to_csv("top_cos_groups.csv")
+    top_sim_groups.to_csv("top_sim_groups.csv")
 
 
-code.interact(local=locals())
+if __name__ == '__main__':
+    main()
+    code.interact(local=locals())
