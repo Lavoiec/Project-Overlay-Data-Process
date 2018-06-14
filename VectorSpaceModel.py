@@ -2,10 +2,6 @@ import pandas as pd
 import utility_funcs as uf
 import ProjectOverlayDataProcess as data
 import code
-import GroupSimilarTags
-import IdentifyingSimilarities
-import ToJson
-import nltk
 
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
@@ -14,8 +10,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import Normalizer
-from sklearn.neighbors import KNeighborsClassifier
-
 
 def import_data():
     return  data.import_dataframe("relevantgroups"), data.import_dataframe("mandates")
@@ -52,15 +46,31 @@ def fit_transform_tfidf(data):
     """
     The main transforming functions for the Vector Space Model
     """
-    
+    #source https://github.com/chrisjmccormick/LSA_Classification/blob/master/inspect_LSA.py
+    # Tfidf vectorizer:
+    #   - Strips out “stop words”
+    #   - Filters out terms that occur in more than half of the docs (max_df=0.5)
+    #   - Filters out terms that occur in only one document (min_df=2).
+    #   - Selects the 10,000 most frequently occuring words in the corpus.
+    #   - Normalizes the vector (L2 norm of 1.0) to normalize the effect of 
+    #     document length on the tf-idf values. 
     vectorizer = TfidfVectorizer(max_df=0.5, max_features=10000,
                              min_df=2, stop_words='english',
                              use_idf=True)
+    # Build the tfidf vectorizer from the training data ("fit"), and apply it 
+    # ("transform").
     vectorized_matrix = vectorizer.fit_transform(data).toarray()
+    # Project the tfidf vectors onto the first N principal components.
+    # Though this is significantly fewer features than the original tfidf vector,
+    # they are stronger features, and the accuracy is higher.
+    # make_pipeline is a wrapper around the class that allows you to compose
+    # transformers and estimators without specifying a name for each one. Could be
+    # written as two seperate parts (see example in https://signal-to-noise.xyz/post/sklearn-pipeline/)
+    # but make_pipeline improves readability and clarity
     svd = TruncatedSVD(100)
-    lsa = make_pipeline(svd, Normalizer(copy=False))
+    lsa = make_pipeline(svd, Normalizer(copy=False)) 
+    # Run SVD on the training data, then project the training data.
     tf_matrix = (lsa.fit_transform(vectorized_matrix))
-
     return tf_matrix
 
 
